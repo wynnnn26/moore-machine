@@ -195,16 +195,23 @@ load never damages the machine already open.
 
 ## Tests
 
-Two suites, both runnable from the project root:
+The self-check ships with the app:
 
-| Suite | Command | What it covers |
-|---|---|---|
-| Built-in self-check | `python moore.py --test` | Pure machine logic, editing rules, simulation, the diagram, dialogs, scrollbars and the invariant that stepping repaints in place rather than rebuilding the canvas. |
-| End-to-end driver | `python -u _e2e.py` | 243 UI-level cases across 19 areas — state/transition CRUD, Moore rules, simulation controls, expected-output checking, Auto Build, overlays, scrollbars, save/load, PNG export, large machines and performance. |
+```bash
+python moore.py --test
+```
 
-The E2E driver only *drives* the application; it never modifies it. Its last full run:
-**240 passed, 1 failed, 2 skipped** — the one failure is a deliberate spec check (Auto Build
-requires an expected output), and the two skips follow from it.
+It covers the pure machine logic, the editing rules, every refusal, the simulation, the diagram,
+dialogs and scrollbars — plus the invariant that stepping re-colours the diagram in place rather
+than repainting it.
+
+There is also a much larger end-to-end driver (243 UI-level cases across 19 areas — state and
+transition CRUD, Moore rules, simulation controls, expected-output checking, Auto Build,
+overlays, scrollbars, save/load, PNG export, large machines and performance). It only *drives*
+the application and never modifies it, and it is **not published in this repository** — it is a
+development tool kept alongside the project. Its last full run: **240 passed, 1 failed,
+2 skipped**, the one failure being a deliberate spec check (Auto Build requires an expected
+output) and the two skips following from it.
 
 ---
 
@@ -215,8 +222,8 @@ moore.py                          the whole application, in one module
 build.bat                         PyInstaller build script
 Moore Machine Simulator.spec      PyInstaller spec (rewritten by build.bat)
 dist\Moore Machine Simulator.exe  the built application
-_e2e.py                           end-to-end test driver
-_e2e_out.txt                      the last E2E run's output
+README.md                         install, build and usage
+DOCUMENTATION.md                  a guided tour of the source
 shot_overview.png                 screenshot of the main window
 shot_autobuild_error.png          screenshot of the Auto Build dialog
 ```

@@ -441,8 +441,9 @@ The first assertion is the sharp one: `draw()` calls `delete("all")` and hands o
 item ids, so **any** revert to repainting on a step changes the id list immediately. The second
 proves the two paths produce the same picture.
 
-A second, larger suite lives in `_e2e.py` (243 UI-level cases across 19 areas). It drives the
-application from outside and never modifies it.
+A second, larger end-to-end driver exists alongside the project (243 UI-level cases across 19
+areas). It drives the application from outside and never modifies it. It is a development tool
+and is deliberately not published in this repository.
 
 ---
 
