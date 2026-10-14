@@ -1,0 +1,13 @@
+# Runtime dependencies for running moore.py from source.
+# Install with:  pip install -r requirements.txt
+#
+# tkinter is NOT listed: it ships with the official Python installers on Windows and macOS.
+# On Debian/Ubuntu it is a separate package:  sudo apt install python3-tk
+#
+# The prebuilt dist\Moore Machine Simulator.exe needs none of this.
+
+# Tested with Python 3.13.2 on Windows 10. Brings in darkdetect and packaging automatically.
+customtkinter>=6.0.0
+
+# PNG export of the diagram.
+pillow>=12.3.0

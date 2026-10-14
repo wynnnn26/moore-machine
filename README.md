@@ -66,12 +66,16 @@ Built with Python and [CustomTkinter](https://github.com/TomSchimansky/CustomTki
 ## Requirements
 
 - **Python 3.10 or newer** (developed and tested on 3.13)
-- [CustomTkinter](https://pypi.org/project/customtkinter/)
-- [Pillow](https://pypi.org/project/pillow/) (for PNG export)
+- **tkinter** — included with the official Python installers on Windows and macOS. On
+  Debian/Ubuntu install it separately: `sudo apt install python3-tk`
+- The two packages in [`requirements.txt`](requirements.txt):
 
 ```bash
-pip install customtkinter pillow
+pip install -r requirements.txt
 ```
+
+`tkinter` is deliberately not in that file — it is part of the standard library, not a PyPI
+package, and listing it makes `pip` fail on some systems.
 
 ---
 
@@ -86,7 +90,7 @@ To run from source instead:
 ```bash
 git clone https://github.com/wynnnn26/moore-machine.git
 cd moore-machine
-pip install customtkinter pillow
+pip install -r requirements.txt
 python moore.py
 ```
 
@@ -102,7 +106,10 @@ It prints `self-check ok` and exits with code 0 when everything passes.
 
 ## Build the Windows executable
 
+PyInstaller is only needed if you want to rebuild the exe — running the app does not need it:
+
 ```bash
+pip install pyinstaller
 build.bat
 ```
 
@@ -219,6 +226,7 @@ output) and the two skips following from it.
 
 ```
 moore.py                          the whole application, in one module
+requirements.txt                  the two runtime dependencies
 build.bat                         PyInstaller build script
 Moore Machine Simulator.spec      PyInstaller spec (rewritten by build.bat)
 dist\Moore Machine Simulator.exe  the built application
