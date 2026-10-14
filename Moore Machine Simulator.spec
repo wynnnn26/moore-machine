@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['moore.py'],
+    ['main.py'],
     pathex=[],
     binaries=[],
     datas=[],
