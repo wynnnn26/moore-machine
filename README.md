@@ -77,6 +77,12 @@ pip install customtkinter pillow
 
 ## Install and run
 
+**No Python needed** — a ready-to-run build is committed at
+[`dist/Moore Machine Simulator.exe`](dist/Moore%20Machine%20Simulator.exe).
+Download it and double-click it.
+
+To run from source instead:
+
 ```bash
 git clone https://github.com/wynnnn26/moore-machine.git
 cd moore-machine
