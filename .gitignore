@@ -10,3 +10,7 @@ _c.py
 _p.ps1
 _probe.py
 _shots.py
+
+# Local-only test driver — kept on disk here, not published to the repo
+_e2e.py
+_e2e_out.txt
