@@ -7,7 +7,7 @@ appear.
 
 Built with Python and [CustomTkinter](https://github.com/TomSchimansky/CustomTkinter).
 
-![The main window, running the built-in example](shot_overview.png)
+![The main window, running the built-in example](assets/shot_overview.png)
 
 ---
 
@@ -91,29 +91,31 @@ To run from source instead:
 git clone https://github.com/wynnnn26/moore-machine.git
 cd moore-machine
 pip install -r requirements.txt
-python moore.py
+python main.py
 ```
 
-To run the self-check instead of opening the window:
+To run the tests instead of opening the window:
 
 ```bash
-python moore.py --test
+python main.py --test
 ```
 
-It prints `self-check ok` and exits with code 0 when everything passes.
+It runs every suite and exits with code 0 when they all pass. `moore.py` is kept as a thin
+forwarder, so the older `python moore.py` and `python moore.py --test` still work too.
 
 ---
 
 ## Build the Windows executable
 
-PyInstaller is only needed if you want to rebuild the exe — running the app does not need it:
+`build.bat` installs what it needs first — both the packages in `requirements.txt` and PyInstaller
+itself — then runs the build:
 
-```bash
-pip install pyinstaller
+```bat
 build.bat
 ```
 
-This runs [PyInstaller](https://pyinstaller.org/) in one-file, windowed mode and writes:
+It does not need anything installed beforehand. This runs
+[PyInstaller](https://pyinstaller.org/) in one-file, windowed mode and writes:
 
 ```
 dist\Moore Machine Simulator.exe
@@ -159,7 +161,7 @@ dialog and leaves your existing machine untouched.
 2. Press **Step** to advance one symbol, or **Run** to play the whole string.
 3. Optionally type what you expect into **Expected output** to have it checked automatically.
 
-![Auto Build: the required input and output](shot_autobuild_error.png)
+![Auto Build: the required input and output](assets/shot_autobuild_error.png)
 
 ---
 
@@ -202,47 +204,77 @@ load never damages the machine already open.
 
 ## Tests
 
-The self-check ships with the app:
-
 ```bash
-python moore.py --test
+python main.py --test      # everything
+python -m tests            # the same, from the tests package
+python -m tests.test_core  # just the machine logic; needs no GUI at all
 ```
 
-It covers the pure machine logic, the editing rules, every refusal, the simulation, the diagram,
-dialogs and scrollbars — plus the invariant that stepping re-colours the diagram in place rather
-than repainting it.
+`tests/test_core.py` covers the machine rules directly and asserts that importing `core/` never
+pulls in the GUI. `tests/selftest.py` drives the real window: the editing rules, every refusal,
+the simulation, the diagram, dialogs and scrollbars — plus the invariant that stepping re-colours
+the diagram in place rather than repainting it.
 
 There is also a much larger end-to-end driver (243 UI-level cases across 19 areas — state and
 transition CRUD, Moore rules, simulation controls, expected-output checking, Auto Build,
 overlays, scrollbars, save/load, PNG export, large machines and performance). It only *drives*
 the application and never modifies it, and it is **not published in this repository** — it is a
-development tool kept alongside the project. Its last full run: **240 passed, 1 failed,
-2 skipped**, the one failure being a deliberate spec check (Auto Build requires an expected
-output) and the two skips following from it.
+development tool kept alongside the project. Its last full run after the modular split:
+**240 passed, 1 failed, 2 skipped**, the one failure being a deliberate spec check (Auto Build
+requires an expected output) and the two skips following from it. The window painted by the
+split code was also compared pixel for pixel against the single-file original: **0 of 1,893,120
+pixels differ.**
 
 ---
 
 ## Project layout
 
 ```
-moore.py                          the whole application, in one module
-requirements.txt                  the two runtime dependencies
-build.bat                         PyInstaller build script
-Moore Machine Simulator.spec      PyInstaller spec (rewritten by build.bat)
+main.py                         entry point - opens the window, or runs the tests with --test
+moore.py                        forwards to main.py, and re-exports the old names for the test driver
+
+core/                           machine logic - no GUI imports anywhere
+  constants.py                  DASH, the placeholder shown at step 0
+  validation.py                 validate() and check_input(): can it be built, can it run
+  simulation.py                 simulate() and out_string(): the Moore rule
+  serialization.py              to_dict() / from_dict() - saving and loading JSON
+  synthesis.py                  Auto Build: working a machine out from examples
+
+ui/                             the interface
+  theme.py                      fonts, button colours, help text, light / dark
+  icons.py                      icons drawn with PIL
+  widgets/                      reusable controls
+    helpers.py                  winfo_exists, auto_hide_bar, Tip
+    kit.py                      WidgetKit: card, tree, btn, field, empty_note, ...
+  pages.py                      the window, one builder per panel
+  dialogs.py                    popups: help, add state, Auto Build
+  diagram.py                    the picture: draw, highlight, zoom, pan, drag, export
+  app.py                        App - machine state, notifications, editing, simulation
+
+tests/                          automated tests
+  test_core.py                  machine logic on its own, without the GUI
+  selftest.py                   the end-to-end self-check behind --test
+
+assets/                         screenshots used by this README
+
+requirements.txt                the two runtime dependencies
+build.bat                       installs requirements, then runs PyInstaller
+Moore Machine Simulator.spec    PyInstaller spec (rewritten by build.bat)
 dist\Moore Machine Simulator.exe  the built application
-README.md                         install, build and usage
-DOCUMENTATION.md                  a guided tour of the source
-shot_overview.png                 screenshot of the main window
-shot_autobuild_error.png          screenshot of the Auto Build dialog
+README.md                       install, build and usage
+DOCUMENTATION.md                a guided tour of the source
 ```
+
+Dependencies point one way: `core` never imports `ui`, and the mixins under `ui/` never import
+`App`, so there are no cycles.
 
 ---
 
 ## Documentation
 
 - **[README.md](README.md)** — this file: install, build and usage.
-- **[DOCUMENTATION.md](DOCUMENTATION.md)** — a guided tour of `moore.py`: how the code is
-  organised, what each part does, and the decisions behind the design.
+- **[DOCUMENTATION.md](DOCUMENTATION.md)** — a guided tour of the source: how it is organised
+  across `core/`, `ui/` and `tests/`, what each part does, and the decisions behind the design.
 
 ---
 

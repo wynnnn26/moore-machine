@@ -10,6 +10,11 @@ _c.py
 _p.ps1
 _probe.py
 _shots.py
+_split.py
+_style.py
+
+# Screenshots the scratch scripts compare while verifying a change
+shot_cmp_*.png
 
 # Local-only test driver — kept on disk here, not published to the repo
 _e2e.py
